@@ -1,0 +1,3 @@
+[submodule "lucky_trainer"]
+	path = lucky_trainer
+	url = https://github.com/LuckyOwl95/lucky_trainer.git
