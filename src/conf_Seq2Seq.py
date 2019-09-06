@@ -7,9 +7,6 @@
 import argparse
 import os
 import sys
-
-import torch.nn as nn
-import torchvision.models as models
 import inspect
 
 path_file = os.path.abspath(
@@ -22,37 +19,34 @@ from lucky_trainer.utils import get_dataset, start_training
 from src.models.Seq2Seq import Seq2Seq
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-o",
-                    "--output",
+parser.add_argument("-mf",
+                    "--music_folder",
                     type=str,
-                    nargs='?',
-                    default=path_file + "/../data/saved_models",
-                    help="output directory for the model")
+                    required=True,
+                    help="Music Folder")
 args = parser.parse_args()
-args_output = args.output
+args_mf = args.music_folder
 
 
-def main(output_directory):
+def main(mf):
     # Parameter settings
     train_params = {
         'skip_test': True,
-        'max_epochs': 200,
-        'batch_size': 8,
+        'max_epochs': 500,
+        'batch_size': 32,
         'early_stopping_patience': 20,
-        'acc_metric': 'classification',
         'class_dim': 1,
-        'top_k': 5,
-        'loss': 'MSELoss',
+        'loss': 'music_multi_loss',
         'optimizer': 'Adam'
     }
 
     dataset_params = {
         'train_filename':
             path_file +
-            '/../data/edm/input_data/train',
+            '/../data/' + mf + '/input_data/train',
         'validation_filename':
             path_file +
-            '/../data/edm/input_data/val'
+            '/../data/' + mf + '/input_data/val'
     }
 
     # Load iterable datasets
@@ -67,13 +61,14 @@ def main(output_directory):
     )
 
     # Instantiate model
-    filename = 'Seq2Seq_edm'
+    filename = 'Seq2Seq_' + mf
 
     # Train the model
     start_training(Seq2Seq(next(iter(train_loader))[0][0].shape), None, train_params, dataset_params,
                    train_loader, validation_loader, None,
-                   output_directory, filename)
+                   "/../data/saved_models", filename)
 
 
+# e.g. python conf_Seq2Seq.py -mf "edm"
 if __name__ == "__main__":
-    main(args_output)
+    main(args_mf)

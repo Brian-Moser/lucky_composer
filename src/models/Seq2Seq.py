@@ -1,3 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+#  Created by Brian B. Moser.
+#  Contact: Brian.Moser@DFKI.de
+
 import torch.nn as nn
 import torch.nn.functional as F
 import torch
@@ -32,7 +38,6 @@ class Seq2Seq(nn.Module):
         dec_duration_out = dec_duration_out.view(dec_element_out.shape[0], dec_element_out.shape[1], 1, -1)
 
         out = torch.cat([dec_element_out, dec_offset_out, dec_duration_out], dim=2)
-        print(out.shape)
 
         return out
 
@@ -82,12 +87,12 @@ class Decoder(nn.Module):
         )
 
         self.out = nn.Linear(input_dim, output_dim)
-        self.softmax = nn.LogSoftmax(dim=1)
+        self.softmax = nn.Softmax(dim=2)
 
     def forward(self, x, state):
         out, _ = self.rnn(F.relu(x), state)
-
-        return self.softmax(self.out(out))
+        out = self.out(out)
+        return self.softmax(out)
 
     def get_init_hidden(self, x):
         """

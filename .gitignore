@@ -208,4 +208,13 @@ pip-selfcheck.json
 
 # unnecessary data
 data/westworld/original_data
+data/westworld/encodings
+data/westworld/input_data
 data/westworld/compositions
+data/westworld/
+
+data/edm/original_data
+data/edm/compositions
+data/edm/encodings
+data/edm/input_data
+data/edm/
